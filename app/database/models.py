@@ -1,4 +1,4 @@
-﻿from sqlalchemy import BigInteger, String, ForeignKey
+﻿from sqlalchemy import BigInteger, String, Integer, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
 
@@ -17,20 +17,15 @@ class User(Base):
     username = mapped_column(String)
     first_name = mapped_column(String)
 
-class Category(Base):
-    __tablename__ = 'categories'
+class Character(Base):
+    __tablename__ = 'caracters'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(25))
-
-class Item(Base):
-    __tablename__ = 'items'
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(25))
-    description: Mapped[str] = mapped_column(String(120))
-    price: Mapped[int] = mapped_column()
-    category: Mapped[int] = mapped_column(ForeignKey('categories.id'))
+    mind: Mapped[str] = mapped_column()
+    strenght: Mapped[str] = mapped_column()
+    agility: Mapped[str] = mapped_column()
+    energy: Mapped[str] = mapped_column()
 
 async def async_main():
     async with engine.begin() as conn:
