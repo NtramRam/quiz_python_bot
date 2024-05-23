@@ -17,10 +17,24 @@ class Reg(StatesGroup):
   name = State()
   number = State()
 
+class Nar(StatesGroup):
+  data = State()
+
 @router.message(CommandStart())
 async def cmd_start(message: Message):
   await rq.set_user(message.from_user)
   await message.answer(f'Узнай кто ты из Наруто!', reply_markup=kb.main)
+
+@router.message(Command('naruto'))
+async def add_naruto(message: Message, state: FSMContext):
+  await state.set_state(Nar.data)
+  await message.answer(f'Введи данные в формате:\nимя интелект сила ловкость энергия')
+
+@router.message(Nar.data)
+async def over_naruto(message: Message, state: FSMContext):
+  await rq.ch_naruto(message.text)
+  await message.answer(f'Все готово, проверяй базу данных\n{message.text.split(' ')}')
+  await state.clear()
 
 @router.message(Command('info'))
 async def get_info(message: Message):
@@ -34,9 +48,10 @@ async def get_info(message: Message):
 async def get_help(message: Message):
   await message.answer(f'/start - запустит бота\n/give_photo - отправит фото лица\nКак дела? - ответит Хорошо, а твои?')
 
-@router.message(F.text == 'Как дела?')
+@router.message(F.text == 'Наруто 15 30 30 48')
 async def how_are_you(message: Message):
-  await message.answer('Хорошо, а твои?')
+  info = message.text.split(' ')
+  await message.answer(f'Вот твоя строка:\n{info}')
 
 @router.message(Command('give_photo'))
 async def give_photo(message: Message):
