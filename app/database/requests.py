@@ -1,5 +1,5 @@
 ﻿from app.database.models import async_session
-from app.database.models import User, Character
+from app.database.models import User, UserCharacter
 from sqlalchemy import  select, update, delete
 
 async def set_user(user_info):
@@ -10,8 +10,9 @@ async def set_user(user_info):
         session.add(User(tg_id = user_info.id, username = user_info.username, first_name = user_info.first_name))
         await session.commit()
 
-async def ch_naruto(info):
+async def set_n_data(n_data):
     async with async_session() as session:
-        info = info.split(' ')
-        session.add(Character(name = info[0], mind = info[1], strenght = info[2], agility = info[3], energy = info[4]))
+        session.add(UserCharacter(user_tg_id = n_data['user_tg_id'], self_rating = n_data['self_rating'], 
+                      hurt = n_data['hurt'], learning = n_data['learning'], danger = n_data['danger'], dream = n_data['dream']))
         await session.commit()
+
